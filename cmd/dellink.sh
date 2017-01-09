@@ -40,14 +40,28 @@ echo $2: $ip2
 
 ###  1 DEL 2
 
-docker exec $1 cp /etc/hosts /etc/hosts.temp
-docker exec $1 sed -i '/'$2'/d'  /etc/hosts.temp
-docker exec $1 bash -c 'cat /etc/hosts.temp > /etc/hosts'
+# 忽略注释行，判断有无操作必要
+has=`docker exec $1 cat /etc/hosts | grep $ip2 | grep -w $2 | grep -v ^#`
 
-echo $1 delete $2 link is OK
-
+if [ ${#has} -ne 0 ]; then
 
 
+	docker exec $1 cp /etc/hosts /etc/hosts.temp
+	#docker exec $1 sed -i '/'$2'/d'  /etc/hosts.temp
+	
+	#替换 name 为空
+	docker exec $1 sed -i 's/\b'$2'\b//g' /etc/hosts.temp
+	
+	#删除只包含 ip 的行：
+	docker exec $1 sed -i '/^'$ip2'\s.$/d' /etc/hosts.temp
+	docker exec $1 sed -i '/^'$ip2'\t.$/d' /etc/hosts.temp
+	
+	docker exec $1 bash -c 'cat /etc/hosts.temp > /etc/hosts'
+
+	echo $1 delete $2 link is OK
+
+
+fi
 
 
 

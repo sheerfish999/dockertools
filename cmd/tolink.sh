@@ -40,23 +40,39 @@ echo $2: $ip2
 
 ###  1 to 2
 
-docker exec $1 cp /etc/hosts /etc/hosts.temp
-docker exec $1 sed -i '/'$2'/d'  /etc/hosts.temp
-docker exec $1 bash -c 'cat /etc/hosts.temp > /etc/hosts'
-docker exec $1 bash -c 'echo '$ip2' '$2' >> /etc/hosts'
+#docker exec $1 cp /etc/hosts /etc/hosts.temp
+#docker exec $1 sed -i '/'$2'/d'  /etc/hosts.temp
+#docker exec $1 bash -c 'cat /etc/hosts.temp > /etc/hosts'
+#docker exec $1 bash -c 'echo '$ip2' '$2' >> /etc/hosts'
+
+# 忽略注释行，精确匹配
+has=`docker exec $1 cat /etc/hosts | grep $ip2 | grep -w $2 | grep -v ^#`
+
+if [ ${#has} -eq 0 ]; then
+	docker exec $1 cp /etc/hosts /etc/hosts.temp
+	docker exec $1 bash -c 'cat /etc/hosts.temp > /etc/hosts'
+	docker exec $1 bash -c 'echo '$ip2' '$2' >> /etc/hosts'
+fi
 
 echo $1 to $2 is OK
 
 ###  2 to 1
 
-docker exec $2 cp /etc/hosts /etc/hosts.temp
-docker exec $2 sed -i '/'$1'/d'  /etc/hosts.temp
-docker exec $2 bash -c 'cat /etc/hosts.temp > /etc/hosts'
-docker exec $2 bash -c 'echo '$ip1' '$1' >> /etc/hosts'
+#docker exec $2 cp /etc/hosts /etc/hosts.temp
+#docker exec $2 sed -i '/'$1'/d'  /etc/hosts.temp
+#docker exec $2 bash -c 'cat /etc/hosts.temp > /etc/hosts'
+#docker exec $2 bash -c 'echo '$ip1' '$1' >> /etc/hosts'
+
+# 忽略注释行，精确匹配
+has=`docker exec $2 cat /etc/hosts | grep $ip1 | grep -w $1 | grep -v ^#`
+
+if [ ${#has} -eq 0 ]; then
+	docker exec $2 cp /etc/hosts /etc/hosts.temp
+	docker exec $2 bash -c 'cat /etc/hosts.temp > /etc/hosts'
+	docker exec $2 bash -c 'echo '$ip1' '$1' >> /etc/hosts'
+fi
 
 echo $2 to $1 is OK
-
-
 
 
 
