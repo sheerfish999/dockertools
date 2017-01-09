@@ -60,11 +60,9 @@ tolink.sh  centos1 8080:8081
 已经启动的容器之间删除link
 
 dellink.sh  CONTAINER_ID/NAME1  LINK_CONTAINER_ID/NAME2
-<<<<<<< HEAD
+
 dellink.sh  centos1  centos2
-=======
-dellink.sh  centos1  centos2   
->>>>>>> a8361e70be69c625af5e68fd9ad3945f5b427f97
+
 删除容器centos1 中对 centos2 的 link
 
 
@@ -83,8 +81,3 @@ python showlocal.py
 
 
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> a8361e70be69c625af5e68fd9ad3945f5b427f97
